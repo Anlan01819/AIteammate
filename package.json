@@ -1,0 +1,19 @@
+{
+  "name": "ai-workplace-genie",
+  "version": "1.0.0",
+  "description": "AI职场精灵 - 智能招聘平台",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "install-all": "npm install && cd server && npm install && cd ../client && npm install"
+  },
+  "keywords": ["AI", "招聘", "React", "Node.js"],
+  "author": "AI职场精灵团队",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}

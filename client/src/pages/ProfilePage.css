@@ -1,0 +1,802 @@
+.profile-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40px 0;
+}
+
+.profile-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.loading-spinner {
+  font-size: 18px;
+  color: white;
+  text-align: center;
+}
+
+/* 个人资料卡片 */
+.profile-card {
+  border-radius: 20px;
+  border: none;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+}
+
+.profile-card .ant-card-body {
+  padding: 32px;
+}
+
+/* 个人资料头部 */
+.profile-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.avatar-section {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.profile-avatar {
+  border: 4px solid #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.verified-badge .ant-badge-count {
+  background: #52c41a;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.avatar-upload {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.upload-btn {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  font-size: 12px;
+  padding: 4px 12px;
+  height: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.upload-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.profile-info {
+  text-align: center;
+}
+
+.profile-name {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 12px 0;
+}
+
+.profile-badges {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.vip-badge,
+.verified-tag {
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 12px;
+  border: none;
+  padding: 4px 12px;
+}
+
+.profile-bio {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+/* 统计信息 */
+.profile-stats {
+  margin: 24px 0;
+}
+
+.profile-stats .ant-statistic-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.profile-stats .ant-statistic-content {
+  font-weight: 700;
+}
+
+/* 操作按钮 */
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.edit-btn {
+  background: linear-gradient(45deg, #1890ff, #096dd9);
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(24, 144, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.edit-btn:hover {
+  background: linear-gradient(45deg, #096dd9, #0050b3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(24, 144, 255, 0.4);
+}
+
+.password-btn {
+  border-radius: 12px;
+  font-weight: 600;
+  border: 2px solid #d9d9d9;
+  transition: all 0.3s ease;
+}
+
+.password-btn:hover {
+  border-color: #1890ff;
+  color: #1890ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 详细信息卡片 */
+.detail-card {
+  border-radius: 20px;
+  border: none;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+}
+
+.detail-card .ant-card-body {
+  padding: 32px;
+}
+
+/* 标签页 */
+.profile-tabs .ant-tabs-tab {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 16px 24px;
+  border-radius: 12px 12px 0 0;
+  transition: all 0.3s ease;
+}
+
+.profile-tabs .ant-tabs-tab:hover {
+  color: #1890ff;
+}
+
+.profile-tabs .ant-tabs-tab-active {
+  background: linear-gradient(135deg, #e6f7ff, #f0f9ff);
+  color: #1890ff;
+}
+
+.profile-tabs .ant-tabs-content-holder {
+  padding-top: 24px;
+}
+
+/* 表单样式 */
+.profile-form .ant-form-item-label > label {
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 14px;
+}
+
+.profile-form .ant-input,
+.profile-form .ant-select-selector,
+.profile-form .ant-picker {
+  border-radius: 8px;
+  border: 2px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.profile-form .ant-input:focus,
+.profile-form .ant-select-focused .ant-select-selector,
+.profile-form .ant-picker:hover,
+.profile-form .ant-picker-focused {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.profile-form .ant-input:disabled,
+.profile-form .ant-select-disabled .ant-select-selector,
+.profile-form .ant-picker-disabled {
+  background: #fafafa;
+  border-color: #f0f0f0;
+  color: #666;
+}
+
+.form-actions {
+  margin-top: 32px;
+  text-align: right;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.save-btn {
+  background: linear-gradient(45deg, #52c41a, #389e0d);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(82, 196, 26, 0.3);
+}
+
+.save-btn:hover {
+  background: linear-gradient(45deg, #389e0d, #237804);
+  box-shadow: 0 4px 12px rgba(82, 196, 26, 0.4);
+}
+
+/* 记录部分 */
+.records-section {
+  padding: 0;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.hire-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hire-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: #666;
+}
+
+.hire-rating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hire-rating span {
+  font-size: 12px;
+  color: #666;
+}
+
+/* 收藏部分 */
+.favorites-section {
+  padding: 0;
+}
+
+.count-badge {
+  background: #1890ff;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.favorite-card {
+  border-radius: 12px;
+  border: 2px solid #f0f0f0;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.favorite-card:hover {
+  border-color: #1890ff;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.favorite-card .ant-card-meta-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.favorite-card .ant-card-meta-description {
+  color: #666;
+}
+
+.favorite-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.favorite-meta .price {
+  font-size: 14px;
+  font-weight: 600;
+  color: #52c41a;
+}
+
+/* 设置部分 */
+.settings-section {
+  padding: 0;
+}
+
+.setting-group {
+  margin-bottom: 32px;
+}
+
+.setting-group h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 20px 0;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-info {
+  flex: 1;
+}
+
+.setting-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.setting-desc {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* 危险区域 */
+.danger-zone {
+  background: #fff2f0;
+  border: 2px solid #ffccc7;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 32px;
+}
+
+.danger-zone h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #cf1322;
+  margin: 0 0 16px 0;
+}
+
+.danger-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* 修改密码模态框 */
+.password-modal .ant-modal-header {
+  border-bottom: 2px solid #f0f0f0;
+  padding: 24px 32px 16px;
+}
+
+.password-modal .ant-modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.password-modal .ant-modal-body {
+  padding: 24px 32px 32px;
+}
+
+.password-form .ant-form-item-label > label {
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 14px;
+}
+
+.password-form .ant-input {
+  border-radius: 8px;
+  border: 2px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.password-form .ant-input:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.password-form .form-actions {
+  margin-top: 24px;
+  margin-bottom: 0;
+  text-align: right;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.password-form .submit-btn {
+  background: linear-gradient(45deg, #1890ff, #096dd9);
+  border: none;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+}
+
+.password-form .submit-btn:hover {
+  background: linear-gradient(45deg, #096dd9, #0050b3);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4);
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  .profile-container {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-page {
+    padding: 20px 0;
+  }
+  
+  .profile-card .ant-card-body,
+  .detail-card .ant-card-body {
+    padding: 20px;
+  }
+  
+  .profile-name {
+    font-size: 24px;
+  }
+  
+  .profile-bio {
+    max-width: none;
+  }
+  
+  .profile-tabs .ant-tabs-tab {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions .ant-btn {
+    width: 100%;
+  }
+  
+  .favorite-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .danger-actions {
+    flex-direction: column;
+  }
+  
+  .danger-actions .ant-btn {
+    width: 100%;
+  }
+  
+  .password-modal {
+    margin: 0 16px;
+  }
+  
+  .password-modal .ant-modal-body {
+    padding: 16px 20px 20px;
+  }
+  
+  .password-form .form-actions {
+    flex-direction: column;
+  }
+  
+  .password-form .form-actions .ant-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-stats .ant-col {
+    margin-bottom: 16px;
+  }
+  
+  .profile-badges {
+    justify-content: center;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .hire-title {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .profile-form .ant-row {
+    flex-direction: column;
+  }
+  
+  .profile-form .ant-col {
+    width: 100%;
+    margin-bottom: 0;
+  }
+}
+
+/* 动画效果 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-card,
+.detail-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.profile-card {
+  animation-delay: 0.1s;
+}
+
+.detail-card {
+  animation-delay: 0.2s;
+}
+
+/* 滚动条样式 */
+.profile-page ::-webkit-scrollbar {
+  width: 6px;
+}
+
+.profile-page ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.profile-page ::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.profile-page ::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 工具提示样式 */
+.ant-tooltip-inner {
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/* 列表样式增强 */
+.ant-list-item {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 16px 0;
+  transition: all 0.3s ease;
+}
+
+.ant-list-item:hover {
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 16px 12px;
+  margin: 0 -12px;
+}
+
+.ant-list-item:last-child {
+  border-bottom: none;
+}
+
+/* 评分样式 */
+.ant-rate {
+  font-size: 14px;
+}
+
+.ant-rate-star {
+  margin-right: 2px;
+}
+
+/* 开关样式 */
+.ant-switch {
+  background: #d9d9d9;
+}
+
+.ant-switch-checked {
+  background: #1890ff;
+}
+
+/* 标签样式增强 */
+.ant-tag {
+  border-radius: 12px;
+  font-weight: 500;
+  border: none;
+  padding: 4px 12px;
+}
+
+/* 分割线样式 */
+.ant-divider {
+  border-color: #f0f0f0;
+  margin: 24px 0;
+}
+
+/* 统计数字样式 */
+.ant-statistic-content-value {
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* 头像样式增强 */
+.ant-avatar {
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 按钮样式增强 */
+.ant-btn {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.ant-btn:hover {
+  transform: translateY(-1px);
+}
+
+.ant-btn-link {
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+.ant-btn-link:hover {
+  background: rgba(24, 144, 255, 0.1);
+  color: #1890ff;
+}
+
+/* 卡片动作样式 */
+.ant-card-actions {
+  background: #fafafa;
+  border-top: 1px solid #f0f0f0;
+}
+
+.ant-card-actions > li {
+  margin: 8px 0;
+}
+
+.ant-card-actions > li > span {
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.ant-card-actions > li > span:hover {
+  background: rgba(24, 144, 255, 0.1);
+}
+
+/* 表单项样式增强 */
+.ant-form-item {
+  margin-bottom: 20px;
+}
+
+.ant-form-item-explain-error {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* 输入框前缀图标样式 */
+.ant-input-prefix {
+  color: #bfbfbf;
+  margin-right: 8px;
+}
+
+/* 选择器样式增强 */
+.ant-select-dropdown {
+  border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+}
+
+.ant-select-item {
+  border-radius: 4px;
+  margin: 2px 8px;
+}
+
+.ant-select-item-option-selected {
+  background: #e6f7ff;
+  color: #1890ff;
+}
+
+/* 日期选择器样式 */
+.ant-picker-dropdown {
+  border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* 文本域样式 */
+.ant-input {
+  resize: vertical;
+}
+
+/* 徽章样式 */
+.ant-badge-count {
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 20px;
+  height: 20px;
+  line-height: 18px;
+}
+
+/* 空状态样式 */
+.ant-empty {
+  padding: 40px 20px;
+}
+
+.ant-empty-description {
+  color: #999;
+  font-size: 14px;
+}
