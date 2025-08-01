@@ -6,7 +6,11 @@ import supabase from '../services/supabase';
 const AuthContext = createContext();
 
 // 配置axios默认设置
-axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const apiUrl = process.env.REACT_APP_API_URL || 
+               (window.location.hostname === 'localhost' ? 
+                'http://localhost:5000/api' : 
+                'https://ai-workplace-api.herokuapp.com/api');
+axios.defaults.baseURL = apiUrl;
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 export const useAuth = () => {
