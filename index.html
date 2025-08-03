@@ -8,8 +8,11 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <!-- GSAP 动画库 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <!-- Supabase 客户端库 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @keyframes float {
             0% { transform: translateY(0px); }
@@ -364,6 +367,10 @@
         </div>
     </footer>
 
+    <!-- 数据库配置和初始化脚本 -->
+    <script src="js/database-init.js"></script>
+    <script src="js/supabase-config.js"></script>
+
     <script>
         // 模拟数据 - 实际项目应从API获取
         const aiEmployees = [
@@ -653,6 +660,80 @@
             `;
         }
 
+        // 渲染从数据库获取的招聘记录
+        function renderDatabaseHireRecords(records) {
+            hireRecordsContainer.classList.remove('hidden');
+            noRecordsMessage.classList.add('hidden');
+            
+            hireRecordsContainer.innerHTML = `
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">AI员工</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户名</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">企业名称</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">联系方式</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">招聘时长</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">提交日期</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            ${records.map(record => {
+                                const employee = aiEmployees.find(emp => emp.id === record.ai_employee_id);
+                                const statusMap = {
+                                    'pending': '审核中',
+                                    'approved': '已通过',
+                                    'rejected': '已拒绝'
+                                };
+                                const status = statusMap[record.status] || record.status;
+                                
+                                return `
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10">
+                                                    <img class="h-10 w-10 rounded-full" src="${employee ? employee.avatar : 'https://api.dicebear.com/6.x/bottts/svg?seed=default'}" alt="">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">${employee ? employee.name : 'AI员工'}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">${record.username || '未设置'}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">${record.company_name}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">${record.contact_email}<br>${record.contact_phone || '未提供'}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">${record.hire_duration}个月</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">${new Date(record.created_at).toLocaleDateString()}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${record.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : record.status === 'approved' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                                ${status}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <button class="text-indigo-600 hover:text-indigo-900" data-id="${record.id}">查看详情</button>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
         // 添加聊天消息到对话框
         function addChatMessage(message, isUser = false) {
             const chatMessages = document.getElementById('chat-messages');
@@ -750,8 +831,11 @@
             showPage('home-page');
         });
 
-        hireForm.addEventListener('submit', (e) => {
+        hireForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // 初始化数据库管理器
+            const dbManager = new DatabaseManager();
             
             // 验证密码是否匹配
             const password = document.getElementById('password').value;
@@ -760,6 +844,48 @@
             if (password !== confirmPassword) {
                 alert('两次输入的密码不一致，请重新输入');
                 return;
+            }
+
+            try {
+                // 创建用户数据
+                const userData = {
+                    username,
+                    password,
+                    company_name: companyName,
+                    contact_name: contactName,
+                    contact_email: contactEmail,
+                    contact_phone: contactPhone
+                };
+
+                // 保存用户到数据库
+                const user = await dbManager.createUser(userData);
+
+                // 创建招聘记录数据
+                const hireData = {
+                    user_id: user.id,
+                    ai_employee_id: currentSelectedAI.id,
+                    ai_employee_name: currentSelectedAI.name,
+                    hire_duration: hireDuration,
+                    requirements,
+                    status: 'pending'
+                };
+
+                // 保存招聘记录到数据库
+                await dbManager.createHireRecord(hireData);
+
+                // 显示成功信息
+                const successUsernameSpan = document.getElementById('success-username');
+                successUsernameSpan.textContent = username;
+                
+                // 显示成功弹窗
+                showPopup('success-popup');
+                
+                // 重置表单
+                hireForm.reset();
+
+            } catch (error) {
+                console.error('提交失败:', error);
+                alert('提交失败，请稍后重试');
             }
             
             // 获取表单数据
@@ -772,35 +898,66 @@
             const duration = document.getElementById('hire-duration').value;
             const requirements = document.getElementById('requirements').value;
             
-            // 创建新的招聘记录
-            const newRecord = {
-                id: hireRecords.length + 1,
-                employeeId,
-                username,
-                companyName,
-                contactName,
-                email,
-                phone,
-                duration,
-                requirements,
-                date: new Date().toLocaleDateString(),
-                status: '审核中'
-            };
-            
-            // 添加到记录中
-            hireRecords.push(newRecord);
-            
-            // 重置表单
-            hireForm.reset();
-            
-            // 在成功弹窗中显示用户名
-            document.getElementById('success-username').textContent = username;
-            
-            // 显示成功弹窗
-            successPopup.classList.add('active');
-            
-            // 在实际应用中，这里应该有一个API调用来创建用户账户
-            console.log('创建用户账户:', { username, email, phone });
+            try {
+                // 使用数据库管理器保存数据
+                const dbManager = new DatabaseManager();
+                
+                // 创建用户账户
+                const userData = {
+                    username,
+                    password,
+                    company_name: companyName,
+                    contact_name: contactName,
+                    contact_email: email,
+                    contact_phone: phone
+                };
+                
+                const user = await dbManager.createUser(userData);
+                
+                // 创建招聘记录
+                const hireData = {
+                    user_id: user.id,
+                    ai_employee_id: employeeId,
+                    hire_duration: parseInt(duration),
+                    requirements,
+                    status: 'pending'
+                };
+                
+                const hireRecord = await dbManager.createHireRecord(hireData);
+                
+                // 添加到本地记录中（用于显示）
+                const newRecord = {
+                    id: hireRecord.id,
+                    employeeId,
+                    username,
+                    companyName,
+                    contactName,
+                    email,
+                    phone,
+                    duration,
+                    requirements,
+                    date: new Date().toLocaleDateString(),
+                    status: '审核中'
+                };
+                
+                hireRecords.push(newRecord);
+                
+                // 重置表单
+                hireForm.reset();
+                
+                // 在成功弹窗中显示用户名
+                document.getElementById('success-username').textContent = username;
+                
+                // 显示成功弹窗
+                successPopup.classList.add('active');
+                
+                console.log('用户账户创建成功:', user);
+                console.log('招聘记录创建成功:', hireRecord);
+                
+            } catch (error) {
+                console.error('提交失败:', error);
+                alert('提交失败，请稍后重试。错误信息：' + error.message);
+            }
         });
 
         // 选项卡切换
@@ -830,28 +987,57 @@
         });
         
         // 邮箱查询表单提交
-        emailSearchForm.addEventListener('submit', (e) => {
+        emailSearchForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = e.target.querySelector('input[type="email"]').value;
-            renderHireRecords(email);
+            
+            try {
+                const dbManager = new DatabaseManager();
+                const records = await dbManager.getHireRecordsByEmail(email);
+                
+                if (records.length === 0) {
+                    hireRecordsContainer.classList.add('hidden');
+                    noRecordsMessage.classList.remove('hidden');
+                    return;
+                }
+                
+                // 渲染从数据库获取的记录
+                renderDatabaseHireRecords(records);
+                
+            } catch (error) {
+                console.error('查询失败:', error);
+                alert('查询失败，请稍后重试。');
+            }
         });
         
         // 账户登录表单提交
         const accountLoginForm = document.getElementById('account-login-form');
-        accountLoginForm.addEventListener('submit', (e) => {
+        accountLoginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = e.target.querySelector('input[type="text"]').value;
             const password = e.target.querySelector('input[type="password"]').value;
             
-            // 在实际应用中，这里应该有一个API调用来验证用户账户
-            console.log('登录账户:', { username, password });
-            
-            // 模拟登录成功，查询该用户的所有记录
-            const userRecords = hireRecords.filter(record => record.username === username);
-            if (userRecords.length > 0) {
-                renderHireRecords(userRecords[0].email);
-            } else {
-                alert('未找到该用户的招聘记录');
+            try {
+                const dbManager = new DatabaseManager();
+                const user = await dbManager.authenticateUser(username, password);
+                
+                if (user) {
+                    // 登录成功，获取该用户的招聘记录
+                    const records = await dbManager.getHireRecordsByUserId(user.id);
+                    
+                    if (records.length > 0) {
+                        renderDatabaseHireRecords(records);
+                    } else {
+                        hireRecordsContainer.classList.add('hidden');
+                        noRecordsMessage.classList.remove('hidden');
+                    }
+                } else {
+                    alert('用户名或密码错误');
+                }
+                
+            } catch (error) {
+                console.error('登录失败:', error);
+                alert('登录失败，请稍后重试。');
             }
         });
 
@@ -874,5 +1060,6 @@
         // 页面加载完成后初始化
         window.addEventListener('load', init);
     </script>
+    <script src="js/supabase-config.js"></script>
 </body>
 </html>

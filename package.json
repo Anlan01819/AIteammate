@@ -1,11 +1,13 @@
 {
   "name": "ai-employee-platform",
   "version": "1.0.0",
-  "description": "AI员工平台 - 聘请AI助手提升工作效率",
+  "description": "AI员工平台 - 招聘AI员工，提升工作效率",
   "main": "index.html",
   "scripts": {
-    "build": "if not exist dist mkdir dist && copy index.html dist && if exist public xcopy /E /I public dist/public",
-    "start": "npx serve"
+    "build": "mkdir -p dist && cp index.html dist/ && cp -r public/* dist/",
+    "build:windows": "if not exist dist mkdir dist && copy index.html dist && if exist public xcopy /E /I public dist/public",
+    "start": "npx serve",
+    "dev": "npx serve -s . -l 3000"
   },
   "keywords": [
     "AI",
@@ -15,6 +17,9 @@
   ],
   "author": "",
   "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.53.0"
+  },
   "devDependencies": {
     "serve": "^14.2.0"
   }

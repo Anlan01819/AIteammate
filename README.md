@@ -1,66 +1,63 @@
-# AIÔ±¹¤Æ½Ì¨
+è¯·å¸®æˆ‘jian'lijianli# AIå›¢é˜Ÿå¹³å°
 
-## ÏîÄ¿¼ò½é
+## åŠŸèƒ½ç‰¹ç‚¹
 
-±¾ÏîÄ¿ÊÇÒ»¸öAIÔ±¹¤Æ¸ÓÃÆ½Ì¨µÄ×îÐ¡¿ÉÐÐÐÔ²úÆ·£¨MVP£©£¬ÓÃ»§¿ÉÒÔä¯ÀÀAIÔ±¹¤ÁÐ±í¡¢²é¿´ÏêÇé¡¢Ìá½»Æ¸ÓÃÉêÇëÒÔ¼°²éÑ¯Æ¸ÓÃ¼ÇÂ¼¡£ÍøÕ¾Éè¼Æ·ç¸ñÒÔ¼«¼òÖ÷ÒåÎªÖ÷£¬½áºÏ¶¯Ì¬»¥¶¯ÔªËØ£¬Ìá¹©¸ßÐ§¡¢Ö±¹ÛµÄÓÃ»§ÌåÑé¡£
+- **é¦–é¡µå±•ç¤º**ï¼šå±•ç¤ºAIå‘˜å·¥å’Œå¹³å°ä»·å€¼ä¸»å¼ 
+- **AIå‘˜å·¥åˆ—è¡¨**ï¼šæµè§ˆæ‰€æœ‰å¯æ‹›è˜çš„AIå‘˜å·¥
+- **AIå‘˜å·¥è¯¦æƒ…**ï¼šæŸ¥çœ‹AIå‘˜å·¥çš„è¯¦ç»†æŠ€èƒ½å’Œå·¥ä½œæ¡ˆä¾‹
+- **æ‹›è˜ç”³è¯·**ï¼šæäº¤æ‹›è˜ç”³è¯·è¡¨å•
+- **æ‹›è˜è®°å½•æŸ¥è¯¢**ï¼šé€šè¿‡é‚®ç®±æŸ¥è¯¢å·²æäº¤çš„æ‹›è˜è®°å½•
 
-## ¹¦ÄÜÌØµã
+## æŠ€æœ¯æ ˆ
 
-- **Ê×Ò³½éÉÜ**£ºÕ¹Ê¾AIÔ±¹¤ÐÎÏóºÍÆ½Ì¨¼ÛÖµÖ÷ÕÅ
-- **AIÔ±¹¤ÁÐ±í**£ºä¯ÀÀËùÓÐ¿ÉÆ¸ÓÃµÄAIÔ±¹¤
-- **AIÔ±¹¤ÏêÇé**£º²é¿´AIÔ±¹¤µÄÏêÏ¸¼¼ÄÜºÍ¹¤×÷°¸Àý
-- **Æ¸ÓÃÉêÇë**£ºÌá½»Æ¸ÓÃÒâÏò±íµ¥
-- **Æ¸ÓÃ¼ÇÂ¼²éÑ¯**£ºÍ¨¹ýÓÊÏä²éÑ¯ÒÑÌá½»µÄÆ¸ÓÃ¼ÇÂ¼
+- å‰ç«¯ï¼šHTML CSS (Tailwind CSS) JavaScript
+- åŠ¨ç”»åº“ï¼šGSAP
+- éƒ¨ç½²ï¼šNetlify
 
-## ¼¼ÊõÕ»
+## æœ¬åœ°å¼€å‘
 
-- Ç°¶Ë£ºHTML, CSS (Tailwind CSS), JavaScript
-- ¶¯»­£ºGSAP
-- ²¿Êð£ºNetlify
-
-## ±¾µØ¿ª·¢
-
-1. ¿ËÂ¡ÏîÄ¿
+1. å…‹éš†é¡¹ç›®
 ```
-git clone [ÏîÄ¿µØÖ·]
+git clone [é¡¹ç›®åœ°å€]
 cd ai-employee-platform
 ```
 
-2. °²×°ÒÀÀµ
+2. å®‰è£…ä¾èµ–
 ```
 npm install
 ```
 
-3. Æô¶¯¿ª·¢·þÎñÆ÷
+3. å¯åŠ¨å¼€å‘æœåŠ¡å™¨
 ```
 npm start
 ```
 
-## ²¿Êð
+## éƒ¨ç½²
 
-ÏîÄ¿ÅäÖÃÎªÍ¨¹ýNetlify×Ô¶¯²¿Êð¡£µ±´úÂëÍÆËÍµ½Ö÷·ÖÖ§Ê±£¬½«×Ô¶¯´¥·¢¹¹½¨ºÍ²¿ÊðÁ÷³Ì¡£
+é¡¹ç›®é…ç½®ä¸ºé€šè¿‡Netlifyè‡ªåŠ¨éƒ¨ç½²ã€‚å½“ä»£ç æŽ¨é€åˆ°ä¸»åˆ†æ”¯æ—¶ï¼Œå°†è‡ªåŠ¨è§¦å‘
+æž„å»ºå’Œéƒ¨ç½²æµç¨‹ã€‚
 
-### ²¿ÊðÅäÖÃ
+### æž„å»ºé…ç½®
 
-- **¹¹½¨ÃüÁî**£º`npm run build`
-- **·¢²¼Ä¿Â¼**£º`dist`
-- **µ¥Ò³Ó¦ÓÃÖØ¶¨Ïò**£ºÒÑÅäÖÃ `_redirects` ÎÄ¼þÒÔÖ§³ÖÇ°¶ËÂ·ÓÉ
+- **æž„å»ºå‘½ä»¤**ï¼š`npm run build`
+- **è¾“å‡ºç›®å½•**ï¼š`dist`
+- **å•é¡µåº”ç”¨é‡å®šå‘**ï¼šåŒ…å«äº† `_redirects` æ–‡ä»¶ä»¥æ”¯æŒå‰ç«¯è·¯ç”±
 
-## ÏîÄ¿½á¹¹
+## é¡¹ç›®ç»“æž„
 
 ```
 /
-©À©¤©¤ index.html          # Ö÷HTMLÎÄ¼þ
-©À©¤©¤ public/             # ¾²Ì¬×ÊÔ´Ä¿Â¼
-©¦   ©¸©¤©¤ _redirects      # NetlifyÖØ¶¨ÏòÅäÖÃ
-©À©¤©¤ package.json        # ÏîÄ¿ÅäÖÃºÍÒÀÀµ
-©¸©¤©¤ README.md           # ÏîÄ¿ËµÃ÷ÎÄµµ
+â”œâ”€â”€ index.html          # ä¸»HTMLæ–‡ä»¶
+â”œâ”€â”€ public/             # é™æ€èµ„æºç›®å½•
+â”‚   â””â”€â”€ _redirects      # Netlifyé‡å®šå‘é…ç½®
+â”œâ”€â”€ package.json        # é¡¹ç›®é…ç½®å’Œä¾èµ–
+â””â”€â”€ README.md           # é¡¹ç›®è¯´æ˜Žæ–‡æ¡£
 ```
 
-## Î´À´¼Æ»®
+## æœªæ¥è®¡åˆ’
 
-- Ìí¼ÓÓÃ»§×¢²áºÍµÇÂ¼¹¦ÄÜ
-- ÊµÏÖºó¶ËAPIºÍÊý¾Ý¿â´æ´¢
-- Ôö¼Ó¸ü¶àAIÔ±¹¤ÀàÐÍºÍÐÐÒµ·ÖÀà
-- ÓÅ»¯ÒÆ¶¯¶ËÌåÑé
-- Ìí¼ÓÖ§¸¶¹¦ÄÜ
+- æ·»åŠ ç”¨æˆ·æ³¨å†Œå’Œç™»å½•åŠŸèƒ½
+- å®žçŽ°åŽç«¯APIå’Œæ•°æ®åº“å­˜å‚¨
+- æ·»åŠ æ›´å¤šAIå‘˜å·¥ç±»åž‹å’Œè¡Œä¸šé€‰é¡¹
+- ä¼˜åŒ–ç§»åŠ¨ç«¯ä½“éªŒ
+- å¤šè¯­è¨€æ”¯æŒ
