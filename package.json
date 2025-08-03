@@ -1,0 +1,21 @@
+{
+  "name": "ai-employee-platform",
+  "version": "1.0.0",
+  "description": "AI员工平台 - 聘请AI助手提升工作效率",
+  "main": "index.html",
+  "scripts": {
+    "build": "if not exist dist mkdir dist && copy index.html dist && if exist public xcopy /E /I public dist/public",
+    "start": "npx serve"
+  },
+  "keywords": [
+    "AI",
+    "员工平台",
+    "招聘",
+    "人工智能"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}

@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI团队平台 - AI客服与员工，提升工作效率</title>
+    <meta name="description" content="AI团队平台，专业提供AI客服与员工服务，提高工作效率，助力企业发展">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- GSAP 动画库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .ai-avatar:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+        .ai-avatar {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .popup-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .popup-content {
+            background-color: white;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.4s, opacity 0.4s;
+        }
+        .popup-overlay.active .popup-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <span class="text-2xl font-bold text-indigo-600">AI团队平台</span>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="#" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" id="nav-home">首页</a>
+                        <a href="#ai-list" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" id="nav-ai-list">AI员工列表</a>
+                        <a href="#my-hires" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" id="nav-my-hires">我的招聘记录</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 首页内容 -->
+    <div id="home-page" class="min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">招聘专业AI员工</h1>
+                <p class="mt-5 max-w-xl mx-auto text-xl text-gray-500">提升工作效率，助力企业发展</p>
+            </div>
+
+            <!-- AI员工展示区 -->
+            <div class="flex flex-wrap justify-center gap-8 mt-16" id="ai-avatars-container">
+                <!-- AI员工头像通过JS动态生成 -->
+            </div>
+
+            <!-- 价值主张 -->
+            <div class="mt-20 text-center">
+                <h2 class="text-2xl font-bold text-gray-900">为什么选择AI员工？</h2>
+                <div class="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <div class="text-indigo-600 text-4xl mb-4">🕒</div>
+                        <h3 class="text-lg font-medium text-gray-900">24/7全天服务</h3>
+                        <p class="mt-2 text-gray-500">AI员工无需休息，随时为您提供服务，助力企业发展</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <div class="text-indigo-600 text-4xl mb-4">💰</div>
+                        <h3 class="text-lg font-medium text-gray-900">成本效益高</h3>
+                        <p class="mt-2 text-gray-500">相比传统员工，AI员工提供更高的性价比</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <div class="text-indigo-600 text-4xl mb-4">⚡</div>
+                        <h3 class="text-lg font-medium text-gray-900">高效准确</h3>
+                        <p class="mt-2 text-gray-500">快速处理大量数据，提供准确的分析和建议</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI员工列表页 -->
+    <div id="ai-list" class="min-h-screen py-12 bg-gray-100 hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">AI员工列表</h2>
+            
+            <!-- 搜索和筛选 -->
+            <div class="mb-8 flex flex-col sm:flex-row gap-4">
+                <div class="flex-1">
+                    <input type="text" placeholder="搜索AI员工..." class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="flex gap-2">
+                    <select class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="">选择技能</option>
+                        <option value="data-analysis">数据分析</option>
+                        <option value="content-creation">内容创作</option>
+                        <option value="customer-service">客户服务</option>
+                        <option value="programming">程序开发</option>
+                    </select>
+                    <select class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="">选择行业</option>
+                        <option value="tech">科技</option>
+                        <option value="finance">金融</option>
+                        <option value="healthcare">医疗</option>
+                        <option value="education">教育</option>
+                        <option value="retail">零售</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- AI员工卡片列表 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="ai-employees-container">
+                <!-- AI员工卡片通过JS动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- AI员工详情和招聘页 -->
+    <div id="hire-page" class="min-h-screen py-12 hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <button class="mb-6 text-indigo-600 flex items-center" id="back-to-list">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                返回列表
+            </button>
+            
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- AI员工详情 -->
+                <div class="lg:w-1/2">
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <div id="ai-detail-container">
+                            <!-- AI员工详细信息将通过JS动态生成 -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 招聘表单 -->
+                <div class="lg:w-1/2">
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <h3 class="text-xl font-bold text-gray-900 mb-6">提交招聘申请</h3>
+                        <form id="hire-form">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-4">账户信息</h4>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="username">用户名</label>
+                                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="password">密码</label>
+                                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="confirm-password">确认密码</label>
+                                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="confirm-password" type="password" required>
+                            </div>
+                            
+                            <h4 class="text-lg font-semibold text-gray-800 mb-4 mt-6">企业信息</h4>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="company-name">企业名称</label>
+                                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="company-name" type="text" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="contact-name">联系人姓名</label>
+                                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="contact-name" type="text" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="contact-email">联系邮箱</label>
+                                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="contact-email" type="email" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="contact-phone">联系电话</label>
+                                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="contact-phone" type="tel" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="hire-duration">招聘时长</label>
+                                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="hire-duration" required>
+                                    <option value="1">1个月</option>
+                                    <option value="3">3个月</option>
+                                    <option value="6">6个月</option>
+                                    <option value="12">12个月</option>
+                                </select>
+                            </div>
+                            <div class="mb-6">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="requirements">具体需求</label>
+                                <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="requirements" rows="4" required></textarea>
+                            </div>
+                            <div class="flex items-center justify-center">
+                                <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full" type="submit">
+                                    提交招聘申请
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 我的招聘记录页 -->
+    <div id="my-hires" class="min-h-screen py-12 bg-gray-100 hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">我的招聘记录</h2>
+            
+            <!-- 查询选项 -->
+            <div class="mb-8 max-w-md mx-auto">
+                <div class="flex border-b border-gray-200 mb-4">
+                    <button id="email-tab" class="px-4 py-2 border-b-2 border-indigo-500 text-indigo-600 font-medium">邮箱查询</button>
+                    <button id="account-tab" class="px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium">账户登录</button>
+                </div>
+                
+                <!-- 邮箱查询表单 -->
+                <div id="email-search-container">
+                    <form id="email-search-form" class="flex gap-2">
+                        <input type="email" placeholder="输入邮箱地址查询招聘记录" class="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md">查询</button>
+                    </form>
+                </div>
+                
+                <!-- 账户登录表单 -->
+                <div id="account-login-container" class="hidden">
+                    <form id="account-login-form">
+                        <div class="mb-4">
+                            <input type="text" placeholder="用户名" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                        </div>
+                        <div class="mb-4">
+                            <input type="password" placeholder="密码" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md">登录</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- 招聘记录列表 -->
+            <div id="hire-records-container" class="hidden">
+                <!-- 招聘记录由通过JS动态生成 -->
+            </div>
+            
+            <!-- 无记录提示 -->
+            <div id="no-records-message" class="text-center py-12 hidden">
+                <p class="text-gray-500 text-lg">未找到相关邮箱的招聘记录</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI客服弹窗 -->
+    <div class="popup-overlay" id="intro-popup">
+        <div class="popup-content p-6">
+            <div class="flex justify-end">
+                <button id="close-popup" class="text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="md:w-1/3 flex flex-col items-center">
+                    <img src="https://api.dicebear.com/6.x/bottts/svg?seed=assistant" alt="AI客服" class="w-48 h-48 mb-3">
+                    <h3 class="text-lg font-semibold text-center text-indigo-600">智能客服助手</h3>
+                    <p class="text-sm text-gray-500 text-center mt-2">24/7在线为您服务</p>
+                </div>
+                <div class="md:w-2/3 bg-gray-50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold mb-3 text-gray-800">AI客服对话</h3>
+                    <div class="chat-messages space-y-4 max-h-60 overflow-y-auto mb-4" id="chat-messages">
+                        <div class="p-3 bg-indigo-100 rounded-lg ml-auto max-w-[80%]">
+                            <p class="text-sm text-right">您好，我想了解一下AI员工服务</p>
+                        </div>
+                        <div class="p-3 bg-white rounded-lg border border-gray-200 max-w-[80%] shadow-sm">
+                            <p class="text-sm">👋 您好，欢迎来到AI团队平台！我是您的智能客服助手。</p>
+                        </div>
+                        <div class="p-3 bg-white rounded-lg border border-gray-200 max-w-[80%] shadow-sm">
+                            <p class="text-sm">我们的平台提供各种专业的AI员工，他们擅长处理数据分析、内容创作、客户服务等多种任务。</p>
+                        </div>
+                        <div class="p-3 bg-white rounded-lg border border-gray-200 max-w-[80%] shadow-sm">
+                            <p class="text-sm">与传统员工相比，我们的AI员工具有以下优势：</p>
+                            <ul class="list-disc pl-5 mt-2 text-sm">
+                                <li>24/7全天候服务，无需休息</li>
+                                <li>成本效益高，性价比超群</li>
+                                <li>高效准确，快速处理大量数据</li>
+                            </ul>
+                        </div>
+                        <div class="p-3 bg-indigo-100 rounded-lg ml-auto max-w-[80%]">
+                            <p class="text-sm text-right">这些服务听起来很不错！</p>
+                        </div>
+                        <div class="p-3 bg-white rounded-lg border border-gray-200 max-w-[80%] shadow-sm">
+                            <p class="text-sm">您可以浏览我们的AI员工列表，查看详细介绍并选择适合您需求的AI员工。准备好探索了吗？</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="chat-input" placeholder="输入您的问题..." class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <button id="send-message" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md">发送</button>
+                    </div>
+                    <div class="mt-4 flex justify-center">
+                        <button id="explore-button" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg">
+                            开始探索AI员工
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 招聘成功弹窗 -->
+    <div class="popup-overlay" id="success-popup">
+        <div class="popup-content p-6 max-w-md">
+            <div class="text-center">
+                <div class="text-green-500 text-5xl mb-4">✅</div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">招聘申请已提交</h3>
+                <p class="text-gray-600 mb-4">我们已收到您的招聘申请，工作人员将联系确认详情。</p>
+                <div class="bg-gray-50 p-4 rounded-lg mb-6 text-left">
+                    <h4 class="font-semibold text-gray-800 mb-2">账户信息</h4>
+                    <p class="text-gray-600 text-sm mb-1">用户名: <span id="success-username" class="font-medium"></span></p>
+                    <p class="text-gray-600 text-sm">请保存好您的账户信息，您可以使用此账户登录查看招聘进展。</p>
+                </div>
+                <button id="close-success-popup" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg">
+                    返回首页
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-white">
+        <div class="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
+            <p class="text-center text-base text-gray-500">
+                &copy; 2023 AI团队平台. 保留所有权利.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // 模拟数据 - 实际项目应从API获取
+        const aiEmployees = [
+            {
+                id: 1,
+                name: "数据分析师 Alex",
+                avatar: "https://api.dicebear.com/6.x/bottts/svg?seed=Alex",
+                skills: ["数据分析", "数据库优化", "机器学习"],
+                shortDesc: "专业数据分析AI，擅长从海量数据中提取有价值的业务洞察",
+                longDesc: "作为一名专业的数据分析AI员工，我擅长处理和分析各种数据，包括销售数据、用户行为数据、市场趋势等。我可以进行深入的分析研究，生成直观的数据可视化图表，并提供基于数据的业务决策建议。",
+                cases: "曾帮助某电商平台分析用户购买行为，优化商品推荐算法，提升转化率15%。为某金融机构建立风险评估模型，准确率达到92%。",
+                industry: "tech"
+            },
+            {
+                id: 2,
+                name: "内容创作者 Bella",
+                avatar: "https://api.dicebear.com/6.x/bottts/svg?seed=Bella",
+                skills: ["文案撰写", "内容策划", "社媒运营"],
+                shortDesc: "创意内容创作专家，为各种平台创造引人入胜的内容",
+                longDesc: "我是一位专业的内容创作AI，擅长撰写各种文案、新闻文章、社交媒体内容和营销材料。我能根据不同平台和目标受众的特点，创作符合调性的内容，并确保内容既有创意又符合品牌调性。",
+                cases: "为某奢侈品品牌策划执行为期3个月的社交媒体营销活动，粉丝增长率达40%。为科技公司撰写技术博客，平均阅读时长提升25%。",
+                industry: "retail"
+            },
+            {
+                id: 3,
+                name: "客服专员 Charlie",
+                avatar: "https://api.dicebear.com/6.x/bottts/svg?seed=Charlie",
+                skills: ["客户沟通", "问题解决", "服务优化"],
+                shortDesc: "24/7在线客服，能高效处理客户问题并提供优质服务体验",
+                longDesc: "作为客服AI，我可以24/7不间断地通过电话、邮件、在线聊天等方式与客户进行沟通。我能处理常见问题，解决投诉，收集客户反馈，并识别客户需求。我具备良好的沟通技巧，确保每位客户都能获得满意的服务体验。",
+                cases: "为某电商公司客服网站处理500+客户咨询，满意度评分4.8/5。帮助提升产品销售转化率30%，降低人工客服成本的同时维持了高水平的客户满意度。",
+                industry: "retail"
+            },
+            {
+                id: 4,
+                name: "程序员 David",
+                avatar: "https://api.dicebear.com/6.x/bottts/svg?seed=David",
+                skills: ["代码编写", "系统设计", "代码调试"],
+                shortDesc: "程序开发AI专家，熟悉多种编程语言和框架",
+                longDesc: "我是一位编程AI专家，精通多种编程语言（如Python、JavaScript、Java等），具备全栈能力。我可以协助编写代码、设计系统架构、调试问题，并提供高效的解决方案。我还能编写文档、设计API接口。",
+                cases: "协助某创业公司开发了电商网站和系统，比预期时间提前20%完成。为某金融科技公司优化数据处理算法，提升了处理速度40%。",
+                industry: "tech"
+            },
+            {
+                id: 5,
+                name: "财务顾问 Emma",
+                avatar: "https://api.dicebear.com/6.x/bottts/svg?seed=Emma",
+                skills: ["财务分析", "预算规划", "投资建议"],
+                shortDesc: "AI财务顾问，提供专业的财务分析和规划服务",
+                longDesc: "作为AI财务顾问，我擅长进行财务数据分析、预算规划、成本控制和投资决策指导。我可以生成财务报表、识别成本节约机会，并提供基于数据的投资建议。",
+                cases: "帮助多家小企业优化财务流程，平均15%营运成本。为个人投资者提供投资组合优化建议，年化收益率提升8%。",
+                industry: "finance"
+            },
+            {
+                id: 6,
+                name: "医疗助手 Frank",
+                avatar: "https://api.dicebear.com/6.x/bottts/svg?seed=Frank",
+                skills: ["医学知识", "健康咨询", "医疗数据分析"],
+                shortDesc: "医疗AI专家，提供健康信息和初步咨询服务",
+                longDesc: "我是一位医疗AI专家，拥有广泛的医学知识库。我可以提供健康信息、分析症状、提供初步建议。我还能协助医疗机构进行数据分析，优化医疗资源配置。",
+                cases: "为医院开发了患者服务系统，减少了患者就诊等待时间25%。为健康管理平台的用户提供个性化健康指导，用户满意度提升18%。",
+                industry: "healthcare"
+            }
+        ];
+
+        // 模拟招聘记录数据
+        const hireRecords = [];
+
+        // DOM元素
+        const navHome = document.getElementById('nav-home');
+        const navAiList = document.getElementById('nav-ai-list');
+        const navMyHires = document.getElementById('nav-my-hires');
+        const homePage = document.getElementById('home-page');
+        const aiListPage = document.getElementById('ai-list');
+        const hirePage = document.getElementById('hire-page');
+        const myHiresPage = document.getElementById('my-hires');
+        const aiAvatarsContainer = document.getElementById('ai-avatars-container');
+        const aiEmployeesContainer = document.getElementById('ai-employees-container');
+        const aiDetailContainer = document.getElementById('ai-detail-container');
+        const backToList = document.getElementById('back-to-list');
+        const hireForm = document.getElementById('hire-form');
+        const emailSearchForm = document.getElementById('email-search-form');
+        const hireRecordsContainer = document.getElementById('hire-records-container');
+        const noRecordsMessage = document.getElementById('no-records-message');
+        const introPopup = document.getElementById('intro-popup');
+        const closePopup = document.getElementById('close-popup');
+        const exploreButton = document.getElementById('explore-button');
+        const successPopup = document.getElementById('success-popup');
+        const closeSuccessPopup = document.getElementById('close-success-popup');
+
+        // 页面导航函数
+        function showPage(pageId) {
+            // 隐藏所有页面
+            homePage.classList.add('hidden');
+            aiListPage.classList.add('hidden');
+            hirePage.classList.add('hidden');
+            myHiresPage.classList.add('hidden');
+            
+            // 显示选中页面
+            document.getElementById(pageId).classList.remove('hidden');
+            
+            // 更新导航状态
+            navHome.classList.remove('border-indigo-500', 'text-gray-900');
+            navHome.classList.add('border-transparent', 'text-gray-500');
+            navAiList.classList.remove('border-indigo-500', 'text-gray-900');
+            navAiList.classList.add('border-transparent', 'text-gray-500');
+            navMyHires.classList.remove('border-indigo-500', 'text-gray-900');
+            navMyHires.classList.add('border-transparent', 'text-gray-500');
+            
+            if (pageId === 'home-page') {
+                navHome.classList.remove('border-transparent', 'text-gray-500');
+                navHome.classList.add('border-indigo-500', 'text-gray-900');
+            } else if (pageId === 'ai-list') {
+                navAiList.classList.remove('border-transparent', 'text-gray-500');
+                navAiList.classList.add('border-indigo-500', 'text-gray-900');
+            } else if (pageId === 'my-hires') {
+                navMyHires.classList.remove('border-transparent', 'text-gray-500');
+                navMyHires.classList.add('border-indigo-500', 'text-gray-900');
+            }
+        }
+
+        // 渲染AI员工头像（首页）
+        function renderAiAvatars() {
+            aiAvatarsContainer.innerHTML = '';
+            aiEmployees.forEach((employee, index) => {
+                const avatarDiv = document.createElement('div');
+                avatarDiv.className = 'ai-avatar relative';
+                avatarDiv.style.animation = `float 3s ease-in-out ${index * 0.2}s infinite`;
+                avatarDiv.innerHTML = `
+                    <img src="${employee.avatar}" alt="${employee.name}" class="w-24 h-24 md:w-32 md:h-32">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                        <span class="bg-indigo-600 text-white px-2 py-1 rounded text-sm">${employee.skills[0]}</span>
+                    </div>
+                `;
+                avatarDiv.addEventListener('click', () => {
+                    // 打开AI客服弹窗
+                    document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+                    introPopup.classList.add('active');
+                    
+                    // 清空输入框
+                    if (document.getElementById('chat-input')) {
+                        document.getElementById('chat-input').value = '';
+                        document.getElementById('chat-input').focus();
+                    }
+                });
+                aiAvatarsContainer.appendChild(avatarDiv);
+            });
+        }
+
+        // 渲染AI员工卡片（列表页）
+        function renderAiEmployees() {
+            aiEmployeesContainer.innerHTML = '';
+            aiEmployees.forEach(employee => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow';
+                card.innerHTML = `
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <img src="${employee.avatar}" alt="${employee.name}" class="w-16 h-16 mr-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">${employee.name}</h3>
+                                <div class="flex flex-wrap gap-1 mt-1">
+                                    ${employee.skills.map(skill => `<span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded">${skill}</span>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600">${employee.shortDesc}</p>
+                        <button class="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded" data-id="${employee.id}">
+                            查看详情
+                        </button>
+                    </div>
+                `;
+                card.querySelector('button').addEventListener('click', () => {
+                    showAiDetail(employee.id);
+                });
+                aiEmployeesContainer.appendChild(card);
+            });
+        }
+
+        // 显示AI员工详情
+        function showAiDetail(employeeId) {
+            const employee = aiEmployees.find(emp => emp.id === employeeId);
+            if (!employee) return;
+            
+            aiDetailContainer.innerHTML = `
+                <div class="flex items-center mb-6">
+                    <img src="${employee.avatar}" alt="${employee.name}" class="w-24 h-24 mr-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">${employee.name}</h2>
+                        <div class="flex flex-wrap gap-1 mt-2">
+                            ${employee.skills.map(skill => `<span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded">${skill}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">专业能力</h3>
+                    <p class="text-gray-600">${employee.longDesc}</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">成功案例</h3>
+                    <p class="text-gray-600">${employee.cases}</p>
+                </div>
+            `;
+            
+            // 保存当前选中的员工ID
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.id = 'employee-id';
+            hiddenInput.value = employeeId;
+            hireForm.appendChild(hiddenInput);
+            
+            showPage('hire-page');
+        }
+
+        // 渲染招聘记录
+        function renderHireRecords(email) {
+            const filteredRecords = hireRecords.filter(record => record.email === email);
+            
+            if (filteredRecords.length === 0) {
+                hireRecordsContainer.classList.add('hidden');
+                noRecordsMessage.classList.remove('hidden');
+                return;
+            }
+            
+            hireRecordsContainer.classList.remove('hidden');
+            noRecordsMessage.classList.add('hidden');
+            
+            hireRecordsContainer.innerHTML = `
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">AI员工</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户名</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">企业名称</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">联系方式</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">招聘时长</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">提交日期</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            ${filteredRecords.map(record => {
+                                const employee = aiEmployees.find(emp => emp.id === record.employeeId);
+                                return `
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10">
+                                                    <img class="h-10 w-10 rounded-full" src="${employee.avatar}" alt="">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">${employee.name}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">${record.username || '未设置'}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">${record.companyName}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">${record.email}<br>${record.phone || '未提供'}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">${record.duration}个月</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">${record.date}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${record.status === '审核中' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}">
+                                                ${record.status}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <button class="text-indigo-600 hover:text-indigo-900" data-id="${record.id}">查看详情</button>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // 添加聊天消息到对话框
+        function addChatMessage(message, isUser = false) {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            
+            if (isUser) {
+                messageDiv.className = 'p-3 bg-indigo-100 rounded-lg ml-auto max-w-[80%]';
+                messageDiv.innerHTML = `<p class="text-sm text-right">${message}</p>`;
+            } else {
+                messageDiv.className = 'p-3 bg-white rounded-lg border border-gray-200 max-w-[80%] shadow-sm';
+                messageDiv.innerHTML = `<p class="text-sm">${message}</p>`;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            
+            // 滚动到最新消息
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // 处理用户发送的消息
+        function handleUserMessage(message) {
+            if (!message.trim()) return;
+            
+            // 添加用户消息到对话框
+            addChatMessage(message, true);
+            
+            // 模拟AI回复
+            setTimeout(() => {
+                let response;
+                const lowerMessage = message.toLowerCase();
+                
+                if (lowerMessage.includes('价格') || lowerMessage.includes('费用') || lowerMessage.includes('多少钱')) {
+                    response = '我们的AI员工价格根据功能和使用时长有所不同，基础版每月仅需¥999起，您可以在员工详情页查看具体价格。';
+                } else if (lowerMessage.includes('如何使用') || lowerMessage.includes('怎么用')) {
+                    response = '使用非常简单！选择您需要的AI员工，填写招聘表单，支付后即可立即使用。我们提供详细的使用指南和技术支持。';
+                } else if (lowerMessage.includes('优势') || lowerMessage.includes('好处')) {
+                    response = 'AI员工的优势包括：24/7全天候工作、成本效益高、处理速度快、不会出错、可扩展性强，能大幅提升您的工作效率。';
+                } else {
+                    response = '感谢您的咨询！您可以浏览我们的AI员工列表，了解更多详情。如有其他问题，随时告诉我。';
+                }
+                
+                addChatMessage(response);
+            }, 800);
+        }
+
+        // 事件监听器
+        navHome.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('home-page');
+        });
+
+        navAiList.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('ai-list');
+        });
+
+        navMyHires.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('my-hires');
+        });
+
+        backToList.addEventListener('click', () => {
+            showPage('ai-list');
+        });
+
+        closePopup.addEventListener('click', () => {
+            introPopup.classList.remove('active');
+        });
+
+        exploreButton.addEventListener('click', () => {
+            introPopup.classList.remove('active');
+            showPage('ai-list');
+        });
+        
+        // 发送消息按钮点击事件
+        document.getElementById('send-message').addEventListener('click', () => {
+            const chatInput = document.getElementById('chat-input');
+            const message = chatInput.value;
+            handleUserMessage(message);
+            chatInput.value = '';
+        });
+        
+        // 输入框回车事件
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const chatInput = document.getElementById('chat-input');
+                const message = chatInput.value;
+                handleUserMessage(message);
+                chatInput.value = '';
+            }
+        });
+
+        closeSuccessPopup.addEventListener('click', () => {
+            successPopup.classList.remove('active');
+            showPage('home-page');
+        });
+
+        hireForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // 验证密码是否匹配
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (password !== confirmPassword) {
+                alert('两次输入的密码不一致，请重新输入');
+                return;
+            }
+            
+            // 获取表单数据
+            const employeeId = parseInt(document.getElementById('employee-id').value);
+            const username = document.getElementById('username').value;
+            const companyName = document.getElementById('company-name').value;
+            const contactName = document.getElementById('contact-name').value;
+            const email = document.getElementById('contact-email').value;
+            const phone = document.getElementById('contact-phone').value;
+            const duration = document.getElementById('hire-duration').value;
+            const requirements = document.getElementById('requirements').value;
+            
+            // 创建新的招聘记录
+            const newRecord = {
+                id: hireRecords.length + 1,
+                employeeId,
+                username,
+                companyName,
+                contactName,
+                email,
+                phone,
+                duration,
+                requirements,
+                date: new Date().toLocaleDateString(),
+                status: '审核中'
+            };
+            
+            // 添加到记录中
+            hireRecords.push(newRecord);
+            
+            // 重置表单
+            hireForm.reset();
+            
+            // 在成功弹窗中显示用户名
+            document.getElementById('success-username').textContent = username;
+            
+            // 显示成功弹窗
+            successPopup.classList.add('active');
+            
+            // 在实际应用中，这里应该有一个API调用来创建用户账户
+            console.log('创建用户账户:', { username, email, phone });
+        });
+
+        // 选项卡切换
+        const emailTab = document.getElementById('email-tab');
+        const accountTab = document.getElementById('account-tab');
+        const emailSearchContainer = document.getElementById('email-search-container');
+        const accountLoginContainer = document.getElementById('account-login-container');
+        
+        emailTab.addEventListener('click', () => {
+            emailTab.classList.add('border-indigo-500', 'text-indigo-600');
+            emailTab.classList.remove('border-transparent', 'text-gray-500');
+            accountTab.classList.remove('border-indigo-500', 'text-indigo-600');
+            accountTab.classList.add('border-transparent', 'text-gray-500');
+            
+            emailSearchContainer.classList.remove('hidden');
+            accountLoginContainer.classList.add('hidden');
+        });
+        
+        accountTab.addEventListener('click', () => {
+            accountTab.classList.add('border-indigo-500', 'text-indigo-600');
+            accountTab.classList.remove('border-transparent', 'text-gray-500');
+            emailTab.classList.remove('border-indigo-500', 'text-indigo-600');
+            emailTab.classList.add('border-transparent', 'text-gray-500');
+            
+            accountLoginContainer.classList.remove('hidden');
+            emailSearchContainer.classList.add('hidden');
+        });
+        
+        // 邮箱查询表单提交
+        emailSearchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = e.target.querySelector('input[type="email"]').value;
+            renderHireRecords(email);
+        });
+        
+        // 账户登录表单提交
+        const accountLoginForm = document.getElementById('account-login-form');
+        accountLoginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = e.target.querySelector('input[type="text"]').value;
+            const password = e.target.querySelector('input[type="password"]').value;
+            
+            // 在实际应用中，这里应该有一个API调用来验证用户账户
+            console.log('登录账户:', { username, password });
+            
+            // 模拟登录成功，查询该用户的所有记录
+            const userRecords = hireRecords.filter(record => record.username === username);
+            if (userRecords.length > 0) {
+                renderHireRecords(userRecords[0].email);
+            } else {
+                alert('未找到该用户的招聘记录');
+            }
+        });
+
+        // 初始化
+        function init() {
+            renderAiAvatars();
+            renderAiEmployees();
+            showPage('home-page');
+            
+            // 使用GSAP添加动画效果
+            gsap.from("#ai-avatars-container .ai-avatar", {
+                y: 50,
+                opacity: 0,
+                duration: 0.8,
+                stagger: 0.2,
+                ease: "power2.out"
+            });
+        }
+
+        // 页面加载完成后初始化
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
